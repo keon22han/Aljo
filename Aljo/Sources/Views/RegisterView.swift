@@ -16,9 +16,15 @@ struct RegisterView: View {
     var body: some View {
         VStack {
             Text("회원가입 뷰입니다.")
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
             Button("뒤로가기") {
                 dismiss()
             }
         }
+        .navigationBarBackButtonHidden()
     }
+}
+
+#Preview {
+    RegisterView(store: Store(initialState: RegisterStore.State()) { RegisterStore() })
 }

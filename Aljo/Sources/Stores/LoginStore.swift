@@ -7,20 +7,21 @@
 
 import Foundation
 import ComposableArchitecture
+import KakaoSDKAuth
+import KakaoSDKUser
+import KakaoSDKCommon
 
 // MARK: Reducer Macro available upper iOS 17.0 , Reducer 프로토콜 채택
 struct LoginStore : Reducer {
     
+    @ObservableState
     struct State : Equatable {
-        @BindingState var id = ""
-        @BindingState var password = ""
-        @BindingState var isIdValid = false
-        @BindingState var isPwValid = false
+        var isLoading = false
     }
     
     enum Action: BindableAction {
         case binding(BindingAction<State>)
-        case loginViewDisappeared
+        case loginButtonClicked
     }
     
     var body: some Reducer<State, Action> {
@@ -29,22 +30,21 @@ struct LoginStore : Reducer {
         
         Reduce { state, action in
             switch action {
-            case .binding(\.$id):
-                state.isIdValid = validateUserId(idString: state.id)
-                return .none
-                
-            case .binding(\.$password):
-                state.isPwValid = validateUserPw(pwString: state.password)
-                return .none
-                
-            case .loginViewDisappeared:
-                state.id = ""
-                state.password = ""
-                state.isIdValid = false
-                state.isPwValid = false
-                return .none
-                
             case .binding(_):
+                return .none
+                
+            case .loginButtonClicked:
+                DispatchQueue.main.async {
+                    UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
+                        Task {
+                            if let error = error {
+                                print(error)
+                            } else {
+                                print("loginWithKakaoTalk() success.")
+                            }
+                        }
+                    }
+                }
                 return .none
             }
         }

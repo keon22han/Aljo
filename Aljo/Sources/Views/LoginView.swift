@@ -9,63 +9,31 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoginView: View {
-    var loginStore: StoreOf<LoginStore>
+    @Bindable var loginStore: StoreOf<LoginStore>
+    
     var state = RegisterStore()
     
     var body: some View {
         NavigationView {
-            WithViewStore(self.loginStore, observe: { $0 }) { viewStore in
-                VStack {
-                    Text("알죠")
-                        .font(.system(size: 30, weight: .bold))
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 70, trailing: 0))
-                    
-                    TextField("id", text: viewStore.$id)
-                        .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(viewStore.isIdValid ? Color.green : Color.gray, lineWidth: 2)
-                        )
-                        .animation(
-                            viewStore.isIdValid ? Animation.default.repeatCount(1, autoreverses: true) : .bouncy,
-                            value: viewStore.isIdValid
-                        )
-                    
-                    
-                    TextField("password", text: viewStore.$password)
-                        .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(viewStore.isPwValid ? Color.green : Color.gray, lineWidth: 2)
-                        )
-                        .animation(
-                            viewStore.isPwValid ? Animation.default.repeatCount(1, autoreverses: true) : .bouncy,
-                            value: viewStore.isPwValid
-                        )
-                    
-                    HStack(alignment: .center, spacing: 10) {
-                        Button("Login") {
-                            
-                        }
-                        .disabled(!viewStore.isIdValid || !viewStore.isPwValid)
-                        
-                        NavigationLink(
-                            "회원가입", destination: RegisterView(store: Store(initialState: RegisterStore.State()) { RegisterStore() }))
-                    }
-                }
-                .padding()
-                .onDisappear {
-                    viewStore.send(.loginViewDisappeared)
+            VStack {
+                Text("알죠")
+                    .font(.system(size: 40, weight: .bold))
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 50, trailing: 0))
+                Button(action: {
+                    self.loginStore.send(.loginButtonClicked)
+                }) {
+                    Image("kakao_login_default") // Assets에 있는 이미지 이름을 사용
+                        .resizable() // MARK: 필수
+                        .frame(width: 200, height: 50) // 원하는 크기로 조정
+                        .aspectRatio(contentMode: .fit)
                 }
             }
         }
     }
-    
-    
 }
 
-#Preview {
-    LoginView(loginStore: Store(initialState: LoginStore.State()) {
-        LoginStore()
-    })
-}
+//#Preview {
+//    LoginView(loginStore: Store(initialState: LoginStore.State()) {
+//        LoginStore()
+//    })
+//}
