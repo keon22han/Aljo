@@ -28,7 +28,8 @@ struct LoginView: View {
                         .aspectRatio(contentMode: .fit)
                 }
             }
-        }
+            
+        }.modifier(LoadingIndicator(isShowing: loginStore.isLoading))
     }
 }
 

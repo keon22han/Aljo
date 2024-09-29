@@ -17,11 +17,14 @@ struct LoginStore : Reducer {
     @ObservableState
     struct State : Equatable {
         var isLoading = false
+        var loginCompleted = false
     }
     
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case loginButtonClicked
+        case kakaoLoginSuccessed(OAuthToken)
+        case kakaoLoginErrorOccured
     }
     
     var body: some Reducer<State, Action> {
@@ -34,34 +37,49 @@ struct LoginStore : Reducer {
                 return .none
                 
             case .loginButtonClicked:
-                DispatchQueue.main.async {
-                    UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
-                        Task {
-                            if let error = error {
-                                print(error)
-                            } else {
-                                print("loginWithKakaoTalk() success.")
-                            }
-                        }
+                state.isLoading = true
+                
+                return .run { send in
+                    do {
+                        // Kakao 로그인 API 호출
+                        let oauthToken = try await loginWithKakaoAccountAsync()
+                        
+                        // 로그인 성공 시 처리
+                        print("loginWithKakaoTalk() success: \(oauthToken)")
+                        await send(.kakaoLoginSuccessed(oauthToken))
+                    } catch {
+                        // 로그인 실패 시 처리
+                        print("loginWithKakaoTalk() failed: \(error.localizedDescription)")
+                        await send(.kakaoLoginErrorOccured)
                     }
                 }
+                
+            case .kakaoLoginSuccessed(let oauthToken) :
+                print("in kakaoLoginSuccessed Action, Token.accessToken : \(oauthToken.accessToken)")
+                state.loginCompleted = true
                 return .none
+                
+            case .kakaoLoginErrorOccured :
+                state.isLoading = false
+                return .none
+                
             }
         }
     }
     
-    private func validateUserId(idString: String) -> Bool {
-        if idString.isEmpty {
-            return false
+    /// 비동기 Kakao 로그인 API 호출 함수
+    func loginWithKakaoAccountAsync() async throws -> OAuthToken {
+        return try await withCheckedThrowingContinuation { continuation in // MARK: closure 메서드 async await 으로 감싸기 (이게 맞나..)
+            UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let oauthToken = oauthToken {
+                    continuation.resume(returning: oauthToken)
+                } else {
+                    continuation.resume(throwing: NSError(domain: "LoginError", code: 0, userInfo: nil))
+                }
+            }
         }
-        return true
-    }
-    
-    private func validateUserPw(pwString: String) -> Bool {
-        if pwString.isEmpty {
-            return false
-        }
-        return true
     }
     
 }
