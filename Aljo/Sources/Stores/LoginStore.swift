@@ -20,6 +20,7 @@ struct LoginStore : Reducer {
     
     enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case loginViewDisappeared
     }
     
     var body: some Reducer<State, Action> {
@@ -34,6 +35,13 @@ struct LoginStore : Reducer {
                 
             case .binding(\.$password):
                 state.isPwValid = validateUserPw(pwString: state.password)
+                return .none
+                
+            case .loginViewDisappeared:
+                state.id = ""
+                state.password = ""
+                state.isIdValid = false
+                state.isPwValid = false
                 return .none
                 
             case .binding(_):
@@ -55,4 +63,5 @@ struct LoginStore : Reducer {
         }
         return true
     }
+    
 }

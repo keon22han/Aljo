@@ -11,10 +11,14 @@ import ComposableArchitecture
 
 struct RegisterView: View {
     var store: StoreOf<RegisterStore>
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
             Text("회원가입 뷰입니다.")
+            Button("뒤로가기") {
+                dismiss()
+            }
         }
     }
 }
