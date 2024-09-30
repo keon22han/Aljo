@@ -4,9 +4,10 @@ import KakaoSDKCommon
 
 @main
 struct AljoApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
-        KakaoSDK.initSDK(appKey: "f69b66f3ed673e7faad06d12743915e4")
+        KakaoSDK.initSDK(appKey: "58129b7f325962454720eda35319bd48")
     }
     
     var body: some Scene {

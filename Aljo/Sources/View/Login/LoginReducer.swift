@@ -44,8 +44,10 @@ struct LoginReducer : Reducer {
                     do {
                         let oauthToken = try await LoginUtil.shared.loginWithKakaoAccountAsync()
                         
-                        print("loginWithKakaoTalk() success: \(oauthToken)")
-                        await send(.kakaoLoginSuccessed(oauthToken))
+                        if let oauthToken = oauthToken {
+                            print("loginWithKakaoTalk() success: \(oauthToken)")
+                            await send(.kakaoLoginSuccessed(oauthToken))
+                        }
                     } catch {
                         print("loginWithKakaoTalk() failed: \(error.localizedDescription)")
                         await send(.kakaoLoginErrorOccured)
