@@ -1,23 +1,27 @@
 import Foundation
-import UIKit
+import SwiftUI
 import ComposableArchitecture
 
 struct OnboardingReducer: Reducer {
     
     @ObservableState
     struct State: Equatable {
-        var shouldShowOnboarding: Bool = true
     }
     
-    enum Action {
+    @CasePathable
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
         case mainButtonClicked
     }
     
     var body: some Reducer<State, Action> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
             case .mainButtonClicked :
-                state.shouldShowOnboarding = false
+                return .none
+                
+            case .binding(_):
                 return .none
             }
         }

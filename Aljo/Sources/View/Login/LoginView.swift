@@ -3,7 +3,8 @@ import ComposableArchitecture
 
 // MARK: 현재는 앱 시작 시 온보딩 창 띄워짐 (24.09.29)
 struct LoginView: View {
-    @Bindable var loginStore: StoreOf<LoginReducer>
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Bindable var loginStore : StoreOf<LoginReducer>
     
     var body: some View {
         NavigationView {
@@ -23,9 +24,9 @@ struct LoginView: View {
             
         }.loadingIndicator(isLoading: self.loginStore.isLoading)
         // TODO: OnBoarding, 기본 설정 페이지로 코드 이동 필요 (24.09.29)
-            .fullScreenCover(isPresented: $loginStore.child.shouldShowOnboarding, content: {
+            .fullScreenCover(isPresented: $loginStore.shouldShowOnboarding, content: {
                 OnBoardingView(
-                    store: self.loginStore.scope(state: \.child, action: \.child)
+                    store: self.loginStore.scope(state: \.onBoardingState, action: \.onBoarding)
                 )
             })
     }

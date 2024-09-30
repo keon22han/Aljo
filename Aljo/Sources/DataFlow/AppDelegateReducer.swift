@@ -5,13 +5,11 @@ struct AppDelegateReducer: Reducer {
     
     @ObservableState
     struct State: Equatable {
-        
     }
     
     enum Action: Equatable {
         case onLaunchFinish
         case onLoginSuccess
-        case onLoginFailure
     }
     
     var body: some Reducer<State, Action> {
@@ -20,14 +18,11 @@ struct AppDelegateReducer: Reducer {
             
             // TODO: app 실행 성공 시
             case .onLaunchFinish :
+                print("앱 실행 성공")
                 return .none
                 
             case .onLoginSuccess :
-                print("login finish")
-                return .none
-                
-            case .onLoginFailure :
-                print("login fail")
+                print("login success")
                 return .none
             }
         }

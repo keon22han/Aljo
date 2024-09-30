@@ -22,7 +22,7 @@ struct OnBoardingView : View {
             }
             .tabViewStyle(PageTabViewStyle())
             
-            Button("메인화면으로") {
+            Button("Start") {
                 self.store.send(.mainButtonClicked)
             }
         }

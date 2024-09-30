@@ -23,7 +23,7 @@ let project = Project(
                         [
                             "CFBundleTypeRole": "Editor",
                             "CFBundleURLSchemes": [
-                                "kakaof69b66f3ed673e7faad06d12743915e4"
+                                "58129b7f325962454720eda35319bd48"
                             ]
                         ]
                     ]

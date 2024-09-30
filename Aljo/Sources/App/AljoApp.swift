@@ -12,9 +12,8 @@ struct AljoApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoginView(loginStore: Store(initialState: LoginReducer.State()) {
-                LoginReducer()
-            })
+            
+            LoginView(loginStore: appDelegate.store.scope(state: \.loginState, action: \.login))
         }
     }
 }
