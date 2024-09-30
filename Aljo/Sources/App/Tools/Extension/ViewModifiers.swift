@@ -1,10 +1,4 @@
-//
-//  LoadingIndicator.swift
-//  Aljo
-//
-//  Created by 한건희 on 9/29/24.
-//
-
+import Foundation
 import SwiftUI
 
 struct LoadingIndicator: ViewModifier {
@@ -39,11 +33,5 @@ struct LoadingIndicator: ViewModifier {
         }
         .ignoresSafeArea()
         .transition(AnyTransition.opacity.animation(.easeInOut(duration: 0.2)))
-    }
-}
-
-extension View {
-    func loadingIndicator(_ isShowing: Bool) -> some View {
-        self.modifier(LoadingIndicator(isShowing: isShowing))
     }
 }
