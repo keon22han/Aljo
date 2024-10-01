@@ -1,33 +1,81 @@
 import SwiftUI
 import ComposableArchitecture
 
-// MARK: 현재는 앱 시작 시 온보딩 창 띄워짐 (24.09.29)
 struct LoginView: View {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Bindable var loginStore : StoreOf<LoginReducer>
+    @Bindable var store : StoreOf<LoginReducer>
     
     var body: some View {
         NavigationView {
             VStack {
-                Text("알죠")
-                    .font(.system(size: 40, weight: .bold))
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 50, trailing: 0))
+                TabView(selection: $store.currentOnboardingIndex) {
+                    OnboardingPageView(imageName: "Onboard1")
+                        .background(Color.white)
+                        .tag(0)
+                    
+                    OnboardingPageView(imageName: "Onboard2")
+                        .background(Color.white)
+                        .tag(1)
+                    
+                    OnboardingPageView(imageName: "Onboard3")
+                        .background(Color.white)
+                        .tag(2)
+                    
+                    OnboardingPageView(imageName: "Onboard4")
+                        .background(Color.white)
+                        .tag(3)
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .overlay(alignment: .bottom, content: {
+                    CustomIndicator(currentIndex: store.currentOnboardingIndex)
+                }).animation(.easeInOut, value: store.currentOnboardingIndex)
+                
                 Button(action: {
-                    self.loginStore.send(.loginButtonClicked)
+                    self.store.send(.loginButtonClicked)
                 }) {
-                    Image("kakao_login_default")
+                    Image("kakao_login_wide")
                         .resizable()
-                        .frame(width: 200, height: 50)
+                        .frame(width: 300, height: 45)
                         .aspectRatio(contentMode: .fit)
                 }
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
             }
-            
-        }.loadingIndicator(isLoading: self.loginStore.isLoading)
-        // TODO: OnBoarding, 기본 설정 페이지로 코드 이동 필요 (24.09.29)
-            .fullScreenCover(isPresented: $loginStore.shouldShowOnboarding, content: {
-                OnBoardingView(
-                    store: self.loginStore.scope(state: \.onBoardingState, action: \.onBoarding)
-                )
-            })
+            .background(Color.white)
+        }.loadingIndicator(isLoading: self.store.isLoading)
     }
 }
+
+struct CustomIndicator: View {
+  
+  let currentIndex: Int
+  
+  var body: some View {
+    ZStack{
+        HStack(spacing: 10) {
+            ForEach(0..<4) { index in
+                Capsule()
+                    .frame(width: currentIndex == index ? 16 : 6, height: 6)
+                    .opacity(currentIndex == index ? 1 : 0.5)
+                    .foregroundStyle(currentIndex == index ? .black : .gray)
+                    .tag(index)
+        }
+      }
+    }
+    .padding(.bottom, 24)
+  }
+}
+
+struct OnboardingPageView: View {
+    
+    var imageName: String
+    
+    var body: some View {
+        VStack {
+            Image(self.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding()
+        }
+    }
+}
+

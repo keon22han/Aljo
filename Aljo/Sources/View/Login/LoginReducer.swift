@@ -7,14 +7,13 @@ struct LoginReducer : Reducer {
     
     @ObservableState
     struct State : Equatable {
-        var onBoardingState = OnboardingReducer.State()
+        var currentOnboardingIndex = 0
         var isLoading = false
         var shouldShowOnboarding = false
     }
     
     @CasePathable
     enum Action: BindableAction {
-        case onBoarding(OnboardingReducer.Action)
         case binding(BindingAction<State>)
         case loginButtonClicked
         case kakaoLoginSuccessed
@@ -24,15 +23,12 @@ struct LoginReducer : Reducer {
     
     var body: some Reducer<State, Action> {
         
-        Scope(state: \.onBoardingState, action: \.onBoarding) {
-            OnboardingReducer()
-        }
-        
         BindingReducer() // MARK: (24.09.29) State, Action 간 바인딩 역할 (State 업데이트 발생 -> BindingReducer가 State값, Action 수신하여 Reducer 클로저 내 도메인 로직 처리 및 결과 State 반영) 공부 필요
         
         Reduce { state, action in
             switch action {
-            case .binding(_):
+                
+            case .binding(_): 
                 return .none
                 
             case .loginButtonClicked:
@@ -65,14 +61,7 @@ struct LoginReducer : Reducer {
             case .kakaoLoginErrorOccured :
                 state.isLoading = false
                 return .none
-                
-            case .onBoarding(.mainButtonClicked):
-                state.shouldShowOnboarding.toggle()
-                return .none
-                
-            case .onBoarding :
-                return .none
             }
-        }
+        }._printChanges()
     }
 }

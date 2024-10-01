@@ -44,9 +44,6 @@ struct AppReducer : Reducer {
             case .appDelegate :
                 return .none
                 
-            case .login(.onBoarding(.mainButtonClicked)) :
-                return .none
-                
             case .login(.kakaoLoginSuccessed) :
                 return .none
                 
@@ -55,5 +52,4 @@ struct AppReducer : Reducer {
             }
         }
     }
-    
 }
